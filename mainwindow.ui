@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>481</width>
-    <height>386</height>
+    <width>543</width>
+    <height>426</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,8 +23,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>481</width>
-     <height>21</height>
+     <width>543</width>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -64,22 +64,6 @@
     <addaction name="actionFind"/>
     <addaction name="actionGoto_Line"/>
    </widget>
-   <widget class="QMenu" name="menuAbout">
-    <property name="title">
-     <string>About</string>
-    </property>
-    <widget class="QMenu" name="menuContact">
-     <property name="title">
-      <string>Contact</string>
-     </property>
-     <addaction name="actionDelirium"/>
-     <addaction name="actionFallen"/>
-     <addaction name="actionChojrak"/>
-    </widget>
-    <addaction name="actionQtLuaPad"/>
-    <addaction name="actionOtland"/>
-    <addaction name="menuContact"/>
-   </widget>
    <widget class="QMenu" name="menuTools">
     <property name="title">
      <string>Tools</string>
@@ -97,7 +81,6 @@
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuTools"/>
-   <addaction name="menuAbout"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <property name="movable">
@@ -309,7 +292,7 @@
     <string>Debuger</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+D</string>
+    <string>Ctrl+R</string>
    </property>
   </action>
   <action name="actionOptions">
@@ -324,30 +307,6 @@
     <string>Shift+O</string>
    </property>
   </action>
-  <action name="actionQtLuaPad">
-   <property name="icon">
-    <iconset resource="icons/res_icon.qrc">
-     <normaloff>:/about.png</normaloff>:/about.png</iconset>
-   </property>
-   <property name="text">
-    <string>About QtLuaPad</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Q</string>
-   </property>
-  </action>
-  <action name="actionOtland">
-   <property name="icon">
-    <iconset resource="icons/res_icon.qrc">
-     <normaloff>:/refresh.png</normaloff>:/refresh.png</iconset>
-   </property>
-   <property name="text">
-    <string>Otland</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+I</string>
-   </property>
-  </action>
   <action name="actionQuest_Creator">
    <property name="icon">
     <iconset resource="icons/res_icon.qrc">
@@ -355,33 +314,6 @@
    </property>
    <property name="text">
     <string>Quest Creator</string>
-   </property>
-  </action>
-  <action name="actionDelirium">
-   <property name="icon">
-    <iconset resource="icons/res_icon.qrc">
-     <normaloff>:/session_edit.png</normaloff>:/session_edit.png</iconset>
-   </property>
-   <property name="text">
-    <string>Delirium</string>
-   </property>
-  </action>
-  <action name="actionFallen">
-   <property name="icon">
-    <iconset resource="icons/res_icon.qrc">
-     <normaloff>:/session.png</normaloff>:/session.png</iconset>
-   </property>
-   <property name="text">
-    <string>Fallen</string>
-   </property>
-  </action>
-  <action name="actionChojrak">
-   <property name="icon">
-    <iconset resource="icons/res_icon.qrc">
-     <normaloff>:/session.png</normaloff>:/session.png</iconset>
-   </property>
-   <property name="text">
-    <string>chojrak</string>
    </property>
   </action>
  </widget>

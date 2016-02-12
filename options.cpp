@@ -3,6 +3,9 @@
 #include "mainwindow.h"
 #include "definitions.h"
 #include <QtGui>
+#include <QFileDialog>
+#include <QStyleFactory>
+
 
 Options::Options(QWidget *parent) :
     QDialog(parent),
@@ -11,7 +14,7 @@ Options::Options(QWidget *parent) :
     ui->setupUi(this);
     this->setFixedSize(this->width(), this->height());
     this->setWindowModality(Qt::WindowModal);
-    QSettings settings(ORGNAME, APPNAME);
+    QSettings settings("Pal", APPNAME);
     settings.beginGroup("QtLuaPad");
     int view = settings.value("mdiview").toInt();
     ui->programmer->setText(settings.value("programmer").toString().toLatin1());
@@ -42,7 +45,7 @@ void Options::on_pushButton_clicked()
         view = 2;
     }
 
-    QSettings settings(ORGNAME, APPNAME);
+    QSettings settings("Pal", APPNAME);
     settings.beginGroup("QtLuaPad");
     settings.setValue("mdiview", view);
     settings.setValue("programmer", ui->programmer->text());

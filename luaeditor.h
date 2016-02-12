@@ -4,16 +4,25 @@
 #define QSCINTILLA_DLL
 #include <QtGui>
 #include <QCompleter>
+#include <qmessagebox.h>
 #include <Qsci/qsciscintilla.h>
 #include <Qsci/qscilexerlua.h>
 
+extern "C" {
+#include "lua.h"
+#include "lualib.h"
+#include "lauxlib.h"
+}
+
 class MainWindow;
 
-class LuaEditor : public QsciScintilla
+class LuaEditor: public QsciScintilla
 {
     Q_OBJECT
+
+
 public:
-    LuaEditor();
+    LuaEditor(QWidget *parent = 0);
 
     static LuaEditor *getInstance()
     {
@@ -32,12 +41,15 @@ public:
     QMessageBox::StandardButton askToSave();
     bool loadWordsFromFile(const QString &fileName);
 
+    void run();
+
 protected:
     void closeEvent(QCloseEvent *event);
     void keyPressEvent(QKeyEvent *event);
 
 private slots:
     void setDocumentModified();
+
 private:
     QsciLexerLua *lexer;
     bool isUntitled;
@@ -46,6 +58,12 @@ private:
     QString getStrippedName(const QString &fullPath);
     QString getCurrentFile();
     QStringList completerEntries;
+
+    void onError(lua_State* lua_context, int status );
+
 };
+
+
+
 
 #endif // LUAEDITOR_H

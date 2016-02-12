@@ -4,7 +4,15 @@
 #include "options.h"
 #include "finddialog.h"
 #include "questcreator.h"
-#include "about.h"
+
+#include <QLabel>
+#include <QSplitter>
+#include <QPlainTextEdit>
+#include <QGridLayout>
+
+
+
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -21,7 +29,7 @@ MainWindow::MainWindow(QWidget *parent) :
     this->setWindowIcon(QIcon(":/winicon.png"));
 
     //Read MainWindow settings from registry.
-    QSettings settings(ORGNAME, APPNAME);
+    QSettings settings("Pal", APPNAME);
     settings.beginGroup("QtLuaPad");
     this->move(settings.value("pos").toPoint());
     QSize s = settings.value("size").toSize();
@@ -40,7 +48,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
 {
     //Write MainWindow settings to registry.
 
-    QSettings settings(ORGNAME, APPNAME);
+    QSettings settings("Pal", APPNAME);
     settings.beginGroup("QtLuaPad");
     settings.setValue("pos", this->pos());
     settings.setValue("size", this->size());
@@ -90,12 +98,16 @@ void MainWindow::closeEvent(QCloseEvent *event)
 void MainWindow::newFile()
 {
     on_actionNew_triggered();
+
+    getActiveEditor()->setWindowTitle( getActiveEditor()->getLuaEditor()->windowTitle() );
 }
 
 void MainWindow::saveFile()
 {
-    if(getActiveEditor() && getActiveEditor()->save())
+    if(getActiveEditor() && getActiveEditor()->getLuaEditor()->save())
         ui->statusBar->showMessage("File successfully saved!", 4000);
+
+    getActiveEditor()->setWindowTitle( getActiveEditor()->getLuaEditor()->windowTitle() );
 }
 
 void MainWindow::_openFile(QString file)
@@ -106,17 +118,20 @@ void MainWindow::_openFile(QString file)
 		mdi->setActiveSubWindow(w);
 		return;
 	}
-	LuaEditor *editor = createMdiChild();
-	if(editor->openFile(file))
+    EditorConsolePairWidget *child = createMdiChild();
+
+    if(child->getLuaEditor()->openFile(file))
 	{
 		ui->statusBar->showMessage(tr("Loaded file: %1.").arg(file));
-		mdi->addSubWindow(editor);
-		mdi->setActiveSubWindow(qobject_cast<QMdiSubWindow*>(editor));
-		editor->showMaximized();
+        mdi->addSubWindow(child);
+        mdi->setActiveSubWindow(qobject_cast<QMdiSubWindow*>(child));
+        child->showMaximized();
 	} else {
-		editor->close();
+        child->close();
 	}
 	setWindowState(Qt::WindowMaximized);
+
+    child->setWindowTitle( child->getLuaEditor()->windowTitle() );
 }
 
 void MainWindow::openFile()
@@ -130,42 +145,47 @@ void MainWindow::openFile()
             mdi->setActiveSubWindow(w);
             return;
         }
-        LuaEditor *editor = createMdiChild();
+        EditorConsolePairWidget *child = createMdiChild();
+        LuaEditor* editor = child->getLuaEditor();
+
         if(editor->openFile(file))
         {
             ui->statusBar->showMessage(tr("Loaded file: %1.").arg(file));
-            mdi->addSubWindow(editor);
-            mdi->setActiveSubWindow(qobject_cast<QMdiSubWindow*>(editor));
-            editor->showMaximized();
+            mdi->addSubWindow(child);
+            mdi->setActiveSubWindow(qobject_cast<QMdiSubWindow*>(child));
+            child->showMaximized();
         } else {
-            editor->close();
+            child->close();
         }
+        child->setWindowTitle( child->getLuaEditor()->windowTitle() );
     }
 }
 
-LuaEditor *MainWindow::createMdiChild()
-{
-    LuaEditor *editor = new LuaEditor;
+EditorConsolePairWidget *MainWindow::createMdiChild()
+{  
+    EditorConsolePairWidget *editor = new EditorConsolePairWidget;
     return editor;
 }
 
-LuaEditor *MainWindow::getActiveEditor()
+EditorConsolePairWidget *MainWindow::getActiveEditor()
 {
     QMdiSubWindow *window = mdi->activeSubWindow();
     if(window)
     {
-        LuaEditor *L = qobject_cast<LuaEditor *>(window->widget());
+        EditorConsolePairWidget *L = qobject_cast<EditorConsolePairWidget *>(window->widget());
         return L;
     }
     return 0;
 }
 
+
 QMdiSubWindow *MainWindow::getChildByPath(const QString &path)
 {
     QString canonicalFilePath = QFileInfo(path).canonicalFilePath();
-    foreach (QMdiSubWindow *window, mdi->subWindowList()) {
+    foreach (QMdiSubWindow *window, mdi->subWindowList())
+    {
         LuaEditor *mdiChild = qobject_cast<LuaEditor *>(window->widget());
-        if (mdiChild->currentFileP() == canonicalFilePath)
+        if (mdiChild && mdiChild->currentFileP() == canonicalFilePath)
             return window;
     }
     return 0;
@@ -189,16 +209,13 @@ void MainWindow::setupToolbar()
     ui->mainToolBar->addAction(QIcon(":/copy.png"), tr("Copy"),  this,  SLOT(copy()));
     ui->mainToolBar->addAction(QIcon(":/paste.png"), tr("Paste"),  this,  SLOT(paste()));
     ui->mainToolBar->addSeparator();
-    ui->mainToolBar->addAction(QIcon(":/zoomin.png"), tr("Zoom in"),  this,  SLOT(zoomIn()));
-    ui->mainToolBar->addAction(QIcon(":/zoomout.png"), tr("Zoom out"),  this,  SLOT(zoomOut()));
-    ui->mainToolBar->addAction(QIcon(":/zoomdef.png"), tr("Default zoom"),  this,  SLOT(zoomDef()));
 }
 
 void MainWindow::on_actionNew_triggered()
 {
-    LuaEditor *child = createMdiChild();
+    EditorConsolePairWidget *child = createMdiChild();
     mdi->addSubWindow(child);
-    child->newFile();
+    child->getLuaEditor()->newFile();
     child->setWindowIcon(QIcon(":/winicon.png"));
     child->showMaximized();
     ui->statusBar->showMessage("Initialized new script successfully!", 4000);
@@ -216,7 +233,7 @@ void MainWindow::on_actionSave_triggered()
 
 void MainWindow::on_actionSave_As_triggered()
 {
-    if(getActiveEditor() && getActiveEditor()->saveAs())
+    if(getActiveEditor() && getActiveEditor()->getLuaEditor()->saveAs())
         ui->statusBar->showMessage("Saved new file successfully!", 4000);
 }
 
@@ -224,31 +241,31 @@ void MainWindow::on_actionSave_As_triggered()
 void MainWindow::on_actionUndo_triggered()
 {
     if(getActiveEditor())
-        getActiveEditor()->undo();
+        getActiveEditor()->getLuaEditor()->undo();
 }
 
 void MainWindow::on_actionRedo_triggered()
 {
     if(getActiveEditor())
-        getActiveEditor()->redo();
+        getActiveEditor()->getLuaEditor()->redo();
 }
 
 void MainWindow::on_actionCut_triggered()
 {
     if(getActiveEditor())
-        getActiveEditor()->cut();
+        getActiveEditor()->getLuaEditor()->cut();
 }
 
 void MainWindow::on_actionCopy_triggered()
 {
     if(getActiveEditor())
-        getActiveEditor()->copy();
+        getActiveEditor()->getLuaEditor()->copy();
 }
 
 void MainWindow::on_actionPaste_triggered()
 {
     if(getActiveEditor())
-        getActiveEditor()->paste();
+        getActiveEditor()->getLuaEditor()->paste();
 }
 
 void MainWindow::on_actionDelete_Line_triggered()
@@ -259,13 +276,13 @@ void MainWindow::on_actionDelete_Line_triggered()
 void MainWindow::on_actionDelete_Selected_triggered()
 {
     if(getActiveEditor())
-        getActiveEditor()->removeSelectedText();
+        getActiveEditor()->getLuaEditor()->removeSelectedText();
 }
 
 void MainWindow::on_actionSelect_All_triggered()
 {
     if(getActiveEditor())
-        getActiveEditor()->selectAll(true);
+        getActiveEditor()->getLuaEditor()->selectAll(true);
 }
 
 
@@ -274,35 +291,7 @@ void MainWindow::on_actionClose_triggered()
     QApplication::closeAllWindows();
 }
 
-void MainWindow::on_actionOtland_triggered()
-{
-    QDesktopServices::openUrl(QUrl(ORGURL));
-}
 
-void MainWindow::zoomIn()
-{
-    if(getActiveEditor())
-        getActiveEditor()->zoomIn();
-}
-
-void MainWindow::zoomOut()
-{
-    if(getActiveEditor())
-        getActiveEditor()->zoomOut();
-}
-
-void MainWindow::zoomDef()
-{
-    if(getActiveEditor())
-        getActiveEditor()->zoomTo(0);
-}
-
-void MainWindow::on_actionQtLuaPad_triggered()
-{
-    About *about = new About(this);
-    about->showNormal();
-    about->setWindowTitle("About QtLuaPad");
-}
 
 void MainWindow::on_actionOptions_triggered()
 {
@@ -354,7 +343,7 @@ void MainWindow::showFind()
     if(mdi->subWindowList().count() > 0)
     {
         FindDialog *dialog = new FindDialog(this);
-        dialog->setEditor(getActiveEditor());
+        dialog->setEditor( getActiveEditor()->getLuaEditor()  );
         dialog->showNormal();
     } else
         ui->statusBar->showMessage("No active editor found to open the Find Dialog.", 4000);
@@ -373,17 +362,15 @@ void MainWindow::on_actionPrint_triggered()
 
 void MainWindow::on_actionDebuger_triggered()
 {
-    ui->statusBar->showMessage("Not implemented yet.", 4000);
-}
-
-void MainWindow::on_actionDelirium_triggered()
-{
-    QDesktopServices::openUrl(QUrl(DELIRIUMSPROF));
-}
-
-void MainWindow::on_actionFallen_triggered()
-{
-    QDesktopServices::openUrl(QUrl(FALLENSPROF));
+    QMdiSubWindow *window = mdi->activeSubWindow();
+    if(window)
+    {
+        EditorConsolePairWidget *win = qobject_cast<EditorConsolePairWidget *>(window->widget());
+        LuaEditor* editor = win->getLuaEditor();
+        QPlainTextEdit* console = win->getConsole();
+        console->clear();
+        win->getExecutor()->pushScript( editor->text() );
+    }
 }
 
 void MainWindow::on_actionFind_triggered()
@@ -391,25 +378,22 @@ void MainWindow::on_actionFind_triggered()
     showFind();
 }
 
-void MainWindow::on_actionChojrak_triggered()
-{
-    QDesktopServices::openUrl(QUrl(CHOJRAKSPROF));
-}
 
 void MainWindow::showGotoLine()
 {
     if(mdi->subWindowList().count() > 0)
     {
         bool ok = false;
-        int ret = QInputDialog::getInteger(0, "Goto Line", "Enter a line number to goto:", 1, 1,
-                                           getActiveEditor()->lines(), 10, &ok);
+        LuaEditor* editor = getActiveEditor()->getLuaEditor();
+        int ret = QInputDialog::getInt(0, "Goto Line", "Enter a line number to goto:", 1, 1,
+                                           editor->lines(), 10, &ok);
         if(ok)
         {
             ret--;
-            if(getActiveEditor()->lines() >= ret)
+            if(editor->lines() >= ret)
             {
-                getActiveEditor()->setSelection(ret, 0, ret, getActiveEditor()->lineLength(ret) - 1);
-                getActiveEditor()->ensureLineVisible(ret);
+                editor->setSelection(ret, 0, ret, editor->lineLength(ret) - 1);
+                editor->ensureLineVisible(ret);
             }
         }
     } else
@@ -419,4 +403,28 @@ void MainWindow::showGotoLine()
 void MainWindow::on_actionGoto_Line_triggered()
 {
     showGotoLine();
+}
+
+EditorConsolePairWidget::EditorConsolePairWidget(QWidget *parent):
+    QWidget( parent),
+    _executor(),
+    _editor(this),
+    _console(this)
+{
+    QHBoxLayout *layout = new QHBoxLayout(this);
+    QSplitter*  splitter = new QSplitter(this);
+
+    splitter->setOrientation(Qt::Vertical);
+    splitter->addWidget(&_editor);
+    splitter->addWidget(&_console);
+    splitter->setStretchFactor(0, 3);
+    splitter->setStretchFactor(1, 1);
+
+    layout->addWidget(splitter);
+    this->setLayout(layout);
+
+    _console.setReadOnly( true );
+    _console.setStyleSheet("QPlainTextEdit { color: white; background-color: rgb(20, 20, 20) }");
+
+     connect( &_executor, &LuaExecutor::printOutput, &_console, &QPlainTextEdit::appendPlainText );
 }

@@ -4,7 +4,11 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network
+QT       += core gui network widgets
+
+CONFIG += qscintilla2 xml2
+
+QMAKE_CXXFLAGS += -std=c++11
 
 TARGET = QtLuaPad
 TEMPLATE = app
@@ -15,24 +19,26 @@ SOURCES += main.cpp\
     luaeditor.cpp \
     options.cpp \
     finddialog.cpp \
-    about.cpp \
-    questcreator.cpp
+    questcreator.cpp \
+    luaexecutor.cpp
 
 HEADERS  += mainwindow.h \
     luaeditor.h \
     definitions.h \
     options.h \
     finddialog.h \
-    about.h \
-    questcreator.h
+    questcreator.h \
+    luaexecutor.h
 
 FORMS    += mainwindow.ui \
-    options.ui \
-    finddialog.ui \
-    about.ui \
-    questcreator.ui
+            options.ui \
+            finddialog.ui \
+            questcreator.ui \
+    editandconsole.ui
 
-LIBS += qscintilla2.lib xml2.lib
+LIBS += -lqscintilla2 -lxml2 -llua5.2
+
+INCLUDEPATH += /usr/include/libxml2 /usr/include/lua5.2
 
 RESOURCES += \
     icons/res_icon.qrc

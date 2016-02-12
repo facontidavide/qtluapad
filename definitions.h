@@ -3,11 +3,6 @@
 
 #define APPVRSN "1.1"
 #define APPNAME "QtLuaPad"
-#define ORGNAME "Delirium"
-#define ORGURL "http://otland.net/forum.php"
-#define FALLENSPROF "http://otland.net/members/Fallen"
-#define DELIRIUMSPROF "http://otland.net/members/Delirium"
-#define CHOJRAKSPROF "http://otland.net/members/chojrak"
 
 #ifdef assert
         #undef assert

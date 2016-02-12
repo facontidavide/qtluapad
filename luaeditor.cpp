@@ -6,11 +6,22 @@
 #include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
 
-LuaEditor::LuaEditor()
+#include <QApplication>
+#include <QFileDialog>
+#include <QInputDialog>
+#include <iostream>
+
+extern "C" {
+#include "lua.h"
+#include "lualib.h"
+#include "lauxlib.h"
+}
+
+LuaEditor::LuaEditor(QWidget *parent ): QsciScintilla(parent)
 {
     initLexer();
 
-    QSettings settings(ORGNAME, APPNAME);
+    QSettings settings("Pal", APPNAME);
     settings.beginGroup("QtLuaPad");
     int tabWidth = settings.value("tabwidth", 4).toInt();
     bool folding = settings.value("folding", true).toBool();
@@ -28,11 +39,12 @@ LuaEditor::LuaEditor()
     this->setAutoIndent(true);
     this->setTabWidth(tabWidth);
     (folding)? this->setFolding(QsciScintilla::BoxedTreeFoldStyle) :
-            this->setFolding(QsciScintilla::NoFoldStyle);
+               this->setFolding(QsciScintilla::NoFoldStyle);
     (braceMatch)? this->setBraceMatching(QsciScintilla::StrictBraceMatch) :
-            this->setBraceMatching(QsciScintilla::NoBraceMatch);
+                  this->setBraceMatching(QsciScintilla::NoBraceMatch);
     (wrap)? this->setWrapMode(QsciScintilla::WrapWord) :
             this->setWrapMode(QsciScintilla::WrapNone);
+
 }
 
 void LuaEditor::initLexer()
@@ -49,7 +61,7 @@ void LuaEditor::initLexer()
     lexer->setColor(QColor(72, 61, 139), 10);
     lexer->setFont(QFont("Courier New", 11, QFont::Bold));
 
-    QSettings settings(ORGNAME, APPNAME);
+    QSettings settings("Pal", APPNAME);
     settings.beginGroup("QtLuaPad");
     bool autoComp = settings.value("autocompletion").toBool();
     QString funcFile = settings.value("funcfile").toString().toLatin1();
@@ -57,11 +69,11 @@ void LuaEditor::initLexer()
 
     if(autoComp)
     {
-        setAutoCompletionSource(QsciScintilla::AcsAll);
-        setAutoCompletionCaseSensitivity(false);
-        setAutoCompletionFillupsEnabled(true);
-        setAutoCompletionThreshold(2);
-        setAutoCompletionShowSingle(true);
+        this->setAutoCompletionSource(QsciScintilla::AcsAll);
+        this->setAutoCompletionCaseSensitivity(false);
+        this->setAutoCompletionFillupsEnabled(true);
+        this->setAutoCompletionThreshold(2);
+        this->setAutoCompletionShowSingle(true);
 
         QsciAPIs *apis = new QsciAPIs(lexer);
         xmlDocPtr doc = xmlParseFile(funcFile.toLatin1());
@@ -100,12 +112,12 @@ void LuaEditor::newFile()
     static int sequence = 1;
     isUntitled = true;
     currentFile = tr("newScript%1.lua").arg(sequence++);
-    setWindowTitle(tr("%1[*]").arg(currentFile));
-    QSettings settings(ORGNAME, APPNAME);
+    this->setWindowTitle(tr("%1[*]").arg(currentFile));
+    QSettings settings("Pal", APPNAME);
     settings.beginGroup("QtLuaPad");
     QString programmer = settings.value("programmer").toString().toLatin1();
     settings.endGroup();
-    setText(tr("-- Created using QtLuaPad on %1\n-- Written by: %2.\n\nfunction onUse(cid, item, frompos, item2, topos)\n\treturn TRUE\nend").arg(QDate::currentDate().toString(), programmer));
+    this->setText(tr("-- Created using QtLuaPad on %1\n-- Written by: %2.\n\nfunction onUse(cid, item, frompos, item2, topos)\n\treturn TRUE\nend").arg(QDate::currentDate().toString(), programmer));
     this->setModified(false);
     connect(this, SIGNAL(textChanged()), this, SLOT(setDocumentModified()));
 }
@@ -136,7 +148,7 @@ void LuaEditor::setCurrentFile(const QString &file)
     isUntitled = false;
     this->setModified(false);
     this->setWindowModified(false);
-    setWindowTitle(tr("%1 - %2[*]").arg(APPNAME, getCurrentFile()));
+    this->setWindowTitle(tr("%1[*]").arg(getCurrentFile()));
 }
 
 QString LuaEditor::getStrippedName(const QString &fullPath)
@@ -161,7 +173,7 @@ bool LuaEditor::saveAs()
 
 bool LuaEditor::save()
 {
-    if(this->isUntitled)
+    if(isUntitled)
         return saveAs();
     else
         return saveFile(currentFile);
@@ -173,9 +185,9 @@ bool LuaEditor::saveFile(const QString &name)
     if(!file.open(QFile::WriteOnly | QFile::Text))
     {
         QMessageBox::warning(this, "Unable to save file!",
-                                  tr("Could not save file %1.\nError string: %2")
-                                  .arg(name, file.errorString()), QMessageBox::Ok,
-                                  QMessageBox::NoButton);
+                             tr("Could not save file %1.\nError string: %2")
+                             .arg(name, file.errorString()), QMessageBox::Ok,
+                             QMessageBox::NoButton);
         return false;
     }
     QApplication::setOverrideCursor(Qt::WaitCursor);
@@ -197,12 +209,17 @@ QMessageBox::StandardButton LuaEditor::askToSave()
     {
         QMessageBox::StandardButton ret =
                 QMessageBox::warning(0, "Please confirm!",
-                tr("Your script with name %1 has been modified\nWould you like to save the changes you've made?").arg(currentFile),
-                QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+                                     tr("Your script with name %1 has been modified\nWould you like to save the changes you've made?").arg(currentFile),
+                                     QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
         return ret;
     }
     return QMessageBox::NoButton;
 }
+
+
+
+
+
 
 void LuaEditor::closeEvent(QCloseEvent *event)
 {
@@ -221,21 +238,21 @@ void LuaEditor::closeEvent(QCloseEvent *event)
 void LuaEditor::keyPressEvent(QKeyEvent *event)
 {
     switch (event->key()) {
-        case Qt::Key_Space:
-            if (event->modifiers() & Qt::ControlModifier) {
-                this->autoCompleteFromAPIs();
-            } else {
-                QsciScintilla::keyPressEvent(event);
-            }
-        break;
-        case Qt::Key_Return:
-            if (event->modifiers() & Qt::ControlModifier) {
-                this->autoCompleteFromDocument();
-            } else {
-                QsciScintilla::keyPressEvent(event);
-            }
-        break;
-        default:
+    case Qt::Key_Space:
+        if (event->modifiers() & Qt::ControlModifier) {
+            this->autoCompleteFromAPIs();
+        } else {
             QsciScintilla::keyPressEvent(event);
+        }
+        break;
+    case Qt::Key_Return:
+        if (event->modifiers() & Qt::ControlModifier) {
+            this->autoCompleteFromDocument();
+        } else {
+            QsciScintilla::keyPressEvent(event);
+        }
+        break;
+    default:
+        QsciScintilla::keyPressEvent(event);
     }
 }

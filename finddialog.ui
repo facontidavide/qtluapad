@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>375</width>
+    <width>450</width>
     <height>206</height>
    </rect>
   </property>
@@ -21,7 +21,7 @@
     <rect>
      <x>8</x>
      <y>5</y>
-     <width>358</width>
+     <width>441</width>
      <height>101</height>
     </rect>
    </property>
@@ -31,7 +31,7 @@
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>240</x>
+      <x>320</x>
       <y>60</y>
       <width>111</width>
       <height>23</height>
@@ -46,7 +46,7 @@
      <rect>
       <x>10</x>
       <y>23</y>
-      <width>61</width>
+      <width>81</width>
       <height>16</height>
      </rect>
     </property>
@@ -59,7 +59,7 @@
      <rect>
       <x>10</x>
       <y>73</y>
-      <width>82</width>
+      <width>121</width>
       <height>17</height>
      </rect>
     </property>
@@ -70,9 +70,9 @@
    <widget class="QCheckBox" name="cbWholeWords">
     <property name="geometry">
      <rect>
-      <x>123</x>
-      <y>73</y>
-      <width>91</width>
+      <x>190</x>
+      <y>71</y>
+      <width>141</width>
       <height>17</height>
      </rect>
     </property>
@@ -83,8 +83,8 @@
    <widget class="Line" name="line">
     <property name="geometry">
      <rect>
-      <x>93</x>
-      <y>47</y>
+      <x>160</x>
+      <y>45</y>
       <width>41</width>
       <height>51</height>
      </rect>
@@ -96,9 +96,9 @@
    <widget class="QLineEdit" name="txtFind">
     <property name="geometry">
      <rect>
-      <x>80</x>
-      <y>22</y>
-      <width>141</width>
+      <x>90</x>
+      <y>20</y>
+      <width>211</width>
       <height>20</height>
      </rect>
     </property>
@@ -108,7 +108,7 @@
      <rect>
       <x>10</x>
       <y>52</y>
-      <width>89</width>
+      <width>131</width>
       <height>17</height>
      </rect>
     </property>
@@ -119,9 +119,9 @@
    <widget class="QCheckBox" name="cbCaseSensitive">
     <property name="geometry">
      <rect>
-      <x>123</x>
-      <y>52</y>
-      <width>96</width>
+      <x>190</x>
+      <y>50</y>
+      <width>141</width>
       <height>17</height>
      </rect>
     </property>
@@ -132,8 +132,8 @@
    <widget class="QPushButton" name="findNext">
     <property name="geometry">
      <rect>
-      <x>240</x>
-      <y>26</y>
+      <x>320</x>
+      <y>30</y>
       <width>111</width>
       <height>23</height>
      </rect>

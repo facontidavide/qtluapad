@@ -2,6 +2,8 @@
 #include <QApplication>
 #include <QSharedMemory>
 #include <QLocalServer>
+#include <qstyle.h>
+#include <qstylefactory.h>
 #include <QtGui>
 #include "mainwindow.h"
 #include "definitions.h"
@@ -105,14 +107,13 @@ int main(int argc, char *argv[])
 	}
 
     MainWindow w;
-    QSettings settings(ORGNAME, APPNAME);
+    QSettings settings("Pal", APPNAME);
     settings.beginGroup("QtLuaPad");
     QString style = settings.value("style").toString().toLatin1();
     settings.endGroup();
     Application::setStyle(QStyleFactory::create(style));
     Application::setPalette(Application::style()->standardPalette());
-    Application::setOrganizationDomain(ORGURL);
-    Application::setOrganizationName(ORGNAME);
+    Application::setOrganizationName("Pal");
     Application::setApplicationName(APPNAME);
     Application::setApplicationVersion(APPVRSN);
 

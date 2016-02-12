@@ -179,7 +179,7 @@
      <rect>
       <x>200</x>
       <y>82</y>
-      <width>81</width>
+      <width>111</width>
       <height>16</height>
      </rect>
     </property>
@@ -190,9 +190,9 @@
    <widget class="QComboBox" name="AssignMethodCombo">
     <property name="geometry">
      <rect>
-      <x>290</x>
+      <x>300</x>
       <y>80</y>
-      <width>201</width>
+      <width>191</width>
       <height>22</height>
      </rect>
     </property>
@@ -269,7 +269,7 @@
      <rect>
       <x>10</x>
       <y>112</y>
-      <width>121</width>
+      <width>131</width>
       <height>18</height>
      </rect>
     </property>
@@ -280,9 +280,9 @@
    <widget class="QLabel" name="ContainerIDLabel">
     <property name="geometry">
      <rect>
-      <x>150</x>
-      <y>112</y>
-      <width>71</width>
+      <x>170</x>
+      <y>110</y>
+      <width>81</width>
       <height>16</height>
      </rect>
     </property>
@@ -296,9 +296,9 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>230</x>
+      <x>260</x>
       <y>110</y>
-      <width>261</width>
+      <width>231</width>
       <height>20</height>
      </rect>
     </property>
