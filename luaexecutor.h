@@ -2,11 +2,8 @@
 #define LUAEXECUTOR_H
 
 #include <QThread>
-extern "C" {
-#include "lua.h"
-#include "lualib.h"
-#include "lauxlib.h"
-}
+
+
 
 class LuaWorker : public QThread
 {
@@ -18,13 +15,15 @@ public slots:
 signals:
     void resultReady(const int status, const QString &result);
     void finished();
-    void print(const QString&);
-
-public:
-    void checkIfQuitRequested(lua_State *L, lua_Debug *ar);
+    void print(const QString &);
 
 private:
     QString script;
+
+    void printProxy(const std::string & msg)
+    {
+        emit print( QString(msg.c_str()) );
+    }
 };
 
 
@@ -50,6 +49,7 @@ public slots:
 signals:
     void executeScript(const QString &script);
     void printOutput(const QString &output);
+
 private:
     bool running;
 };

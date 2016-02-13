@@ -10,8 +10,10 @@
 #include <QPlainTextEdit>
 #include <QGridLayout>
 
-
-
+#include <QMdiArea>
+#include <QMdiSubWindow>
+#include <QInputDialog>
+#include <QPlainTextEdit>
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -406,25 +408,32 @@ void MainWindow::on_actionGoto_Line_triggered()
 }
 
 EditorConsolePairWidget::EditorConsolePairWidget(QWidget *parent):
-    QWidget( parent),
-    _executor(),
-    _editor(this),
-    _console(this)
+    QWidget( parent)
 {
+    _executor = new LuaExecutor;
+    _editor   = new LuaEditor(this);
+    _console  = new QPlainTextEdit(this);
+
     QHBoxLayout *layout = new QHBoxLayout(this);
     QSplitter*  splitter = new QSplitter(this);
 
     splitter->setOrientation(Qt::Vertical);
-    splitter->addWidget(&_editor);
-    splitter->addWidget(&_console);
+    splitter->addWidget(_editor);
+    splitter->addWidget(_console);
     splitter->setStretchFactor(0, 3);
     splitter->setStretchFactor(1, 1);
 
     layout->addWidget(splitter);
     this->setLayout(layout);
 
-    _console.setReadOnly( true );
-    _console.setStyleSheet("QPlainTextEdit { color: white; background-color: rgb(20, 20, 20) }");
+    _console->setReadOnly( true );
+    _console->setStyleSheet("QPlainTextEdit { color: white; background-color: rgb(20, 20, 20) }");
 
-     connect( &_executor, &LuaExecutor::printOutput, &_console, &QPlainTextEdit::appendPlainText );
+     connect( _executor, &LuaExecutor::printOutput, _console, &QPlainTextEdit::appendPlainText );
 }
+
+LuaEditor *EditorConsolePairWidget::getLuaEditor()  { return _editor; }
+
+QPlainTextEdit *EditorConsolePairWidget::getConsole()  { return _console; }
+
+LuaExecutor *EditorConsolePairWidget::getExecutor()  { return _executor; }

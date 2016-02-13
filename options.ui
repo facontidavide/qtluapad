@@ -261,59 +261,6 @@
     <enum>Qt::Horizontal</enum>
    </property>
   </widget>
-  <widget class="QLabel" name="label_4">
-   <property name="geometry">
-    <rect>
-     <x>295</x>
-     <y>160</y>
-     <width>131</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Application Style:</string>
-   </property>
-  </widget>
-  <widget class="QComboBox" name="comboStyle">
-   <property name="geometry">
-    <rect>
-     <x>284</x>
-     <y>180</y>
-     <width>121</width>
-     <height>22</height>
-    </rect>
-   </property>
-   <item>
-    <property name="text">
-     <string>Windows</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>WindowsXP</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>WindowsVista</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Plastique</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Cleanlooks</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Motif</string>
-    </property>
-   </item>
-  </widget>
   <widget class="QLabel" name="label_5">
    <property name="geometry">
     <rect>

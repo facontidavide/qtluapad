@@ -8,11 +8,6 @@
 #include <Qsci/qsciscintilla.h>
 #include <Qsci/qscilexerlua.h>
 
-extern "C" {
-#include "lua.h"
-#include "lualib.h"
-#include "lauxlib.h"
-}
 
 class MainWindow;
 
@@ -58,8 +53,6 @@ private:
     QString getStrippedName(const QString &fullPath);
     QString getCurrentFile();
     QStringList completerEntries;
-
-    void onError(lua_State* lua_context, int status );
 
 };
 

@@ -2,10 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QMdiArea>
-#include <QMdiSubWindow>
-#include <QInputDialog>
-#include <QPlainTextEdit>
+
 #include "luaeditor.h"
 #include "luaexecutor.h"
 
@@ -17,7 +14,9 @@ class LuaEditor;
 
 QT_BEGIN_NAMESPACE
 class QMdiArea;
+class QInputDialog;
 class QMdiSubWindow;
+class QPlainTextEdit;
 QT_END_NAMESPACE
 
 
@@ -28,13 +27,13 @@ class EditorConsolePairWidget: public QWidget
 public:
    explicit EditorConsolePairWidget(QWidget *parent = 0);
 
-    LuaEditor* getLuaEditor()  { return &_editor; }
-    QPlainTextEdit* getConsole()  { return &_console; }
-    LuaExecutor* getExecutor()  { return &_executor; }
+    LuaEditor*      getLuaEditor();
+    QPlainTextEdit* getConsole();
+    LuaExecutor*    getExecutor();
 private:
-    LuaExecutor      _executor;
-    LuaEditor        _editor;
-    QPlainTextEdit   _console;
+    LuaExecutor*      _executor;
+    LuaEditor*        _editor;
+    QPlainTextEdit*  _console;
 
 };
 

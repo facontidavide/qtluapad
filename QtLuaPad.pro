@@ -33,8 +33,7 @@ HEADERS  += mainwindow.h \
 FORMS    += mainwindow.ui \
             options.ui \
             finddialog.ui \
-            questcreator.ui \
-    editandconsole.ui
+            questcreator.ui
 
 LIBS += -lqscintilla2 -lxml2 -llua5.2
 
