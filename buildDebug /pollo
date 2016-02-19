@@ -1,5 +1,0 @@
--- Created using QtLuaPad on jue. feb. 11 2016
--- Written by: .
-while true do
-	print("pollo")
-end
