@@ -2,14 +2,15 @@
 #include "luaexecutor.h"
 #include <iostream>
 #include <QMessageBox>
+#include <boost/optional.hpp>
 #include <QPlainTextEdit>
 #include "include/LuaContext.hpp"
+
+#include "motorcontrol.h"
 
 bool quit_any_execution;
 
 static LuaWorker* ugly_pointer;
-
-
 
 static int l_my_print(lua_State* L)
 {
@@ -48,6 +49,13 @@ void LuaWorker::doWork(const QString &script)
     lua_pop(context.getLuaStateRaw(), 1);
     //--------
 
+    context.writeFunction("newMotorControl", []() { return MotorControl(); });
+
+    context.registerFunction("setPositionTarget", &MotorControl::setPositionTarget);
+    context.registerFunction("getActualPosition", &MotorControl::getActualPosition);
+    context.registerFunction("waitPositionReached", &MotorControl::waitPositionReached);
+
+    //-------
     QString  msg = "Script executed";
     int status = 0;
 

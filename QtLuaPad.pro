@@ -20,7 +20,8 @@ SOURCES += main.cpp\
     options.cpp \
     finddialog.cpp \
     questcreator.cpp \
-    luaexecutor.cpp
+    luaexecutor.cpp \
+    motorcontrol.cpp
 
 HEADERS  += mainwindow.h \
     luaeditor.h \
@@ -28,7 +29,8 @@ HEADERS  += mainwindow.h \
     options.h \
     finddialog.h \
     questcreator.h \
-    luaexecutor.h
+    luaexecutor.h \
+    motorcontrol.h
 
 FORMS    += mainwindow.ui \
             options.ui \
